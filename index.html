@@ -1,0 +1,292 @@
+<head> </head>
+<title>PowerBoard Widget Customisation</title>
+
+<body>
+  <div class="main-container">
+    <h1>PowerBoard Widget Customisation</h1>
+
+    <p>
+      This interactive app will demonstrate an example of how you can customise
+      PowerBoard Widget to your requirements.
+    </p>
+
+    <form>
+      <label for="bgcolor">Select your <strong>background color</strong>:</label>
+      <input type="color" id="bgcolor" value="#FFFFFF" onchange="bgcolorChange()" />
+      <br /><br />
+      <label for="bordercolor">Select your your <strong>border color</strong>:</label>
+      <input type="color" id="bordercolor" value="#000000" />
+      <br /><br />
+      <label for="buttoncolor">Select your <strong>button color</strong>:</label>
+      <input type="color" id="buttoncolor" value="#Ffcc00" />
+      <br /><br />
+      <label for="textcolor">Select your <strong>text color</strong>:</label>
+      <input type="color" id="textcolor" value="#000000" />
+      <br /><br />
+      <label for="submittext"><strong>Submit button text</strong>:</label>
+      <input type="text" id="submittext" value="Pay Now" />
+    
+      <br /><br />
+  
+    </form>
+  </div>
+  <div id="widget"></div>
+
+  
+  <script src="https://widget.staging.powerboard.commbank.com.au/sdk/latest/widget.umd.js"></script>
+  <script>
+    var widget = new cba.HtmlWidget(
+      "#widget",
+      "073a8764575514009195edc1f8e96a7392d85362", // Public Key
+      "655c010486464df10a64ace6" // Gateway ID
+    );
+
+   widget.setEnv('staging_cba'); // Env
+
+    widget.useAutoResize(); // Widget auto re-size to modal size
+
+    widget.setTexts({
+      //Custom Widget Submit Button Text
+      submit_button: "Pay Now!",
+    });
+
+    widget.setStyles({
+      background_color: "#FFFFFF",
+      border_color: "#000000",
+      button_color: "#FC0",
+      text_color: "#000000",
+      font_family: "Trebuchet MS",
+    });
+
+    widget.setFormElements([
+      {
+          field:  'card_name*',
+          placeholder: 'Input your card holder name...',
+          label: 'Card Holder Name',
+          value: 'Sujeet Test',
+      },
+      {
+          field:  'card_ccv',          
+          value: '100',
+      },
+      {
+          field:  'expire_month',          
+          value: '01',
+      },
+      {
+          field:  'expire_year',         
+          value: '39',
+      },
+      {
+          field:  'card_number',
+          value: '5111111111111118',
+      },
+  ])
+
+    //widget.setHiddenElements(["submit_button"]);
+
+   // widget.interceptSubmitForm("#myForm");
+
+    widget.on("finish", function (data) {
+      widget.hide([(saveSize = false)]);
+      console.log("Widget Response", data)
+    });
+
+    widget.on("metaChange", function (data) {     
+       console.log("Widget MetaData", data)
+    });
+
+    widget.on("submit", {
+
+    });
+
+
+    widget.load();
+
+  
+
+    /* Event listener */
+    function bgcolorChange() {
+      var newbgColor = document.getElementById("bgcolor");
+
+      widget.setStyles({
+        background_color: newbgColor.value,
+      });
+      widget.reload();
+
+    }
+
+  
+
+    var newborderColor = document.getElementById("bordercolor");
+    newborderColor.addEventListener(
+      "input",
+      function () {
+        widget.setStyles({
+          border_color: newborderColor.value,
+        });
+        widget.reload();
+      },
+      false
+    );
+
+    var buttonColor = document.getElementById("buttoncolor");
+    buttonColor.addEventListener(
+      "input",
+      function () {
+        widget.setStyles({
+          button_color: buttonColor.value,
+        });
+        widget.reload();
+      },
+      false
+    );
+    var textColor = document.getElementById("textcolor");
+    textColor.addEventListener(
+      "input",
+      function () {
+        widget.setStyles({
+          text_color: textColor.value,
+        });
+        widget.reload();
+      },
+      false
+    );
+
+    var submitText = document.getElementById("submittext");
+    submitText.addEventListener(
+      "input",
+      function () {
+        widget.setTexts({
+          submit_button: submitText.value,
+        });
+        widget.reload();
+      },
+      false
+    );
+
+    var fontName = document.getElementById("fonts");
+    fontName.addEventListener(
+      "input",
+      function () {
+        widget.setStyles({
+          font_family: fontName.value,
+        });
+        widget.reload();
+      },
+      false
+    );
+
+    var hideButton = document.getElementById("hidebutton");
+    hideButton.addEventListener(
+      "input",
+      function () {
+        if (hideButton.checked == true) {
+          widget.setHiddenElements(["submit_button"]);
+        } else if (hideButton.checked == false) {
+          widget.showElements(["submit_button", 'email']);
+        }
+
+        widget.reload();
+      },
+      false
+    );
+
+    var fonts = ["Trebuchet MS", "Arial", "Verdana", "Segoe UI"];
+    var options = "";
+    fonts.map((op, i) => {
+      options += `<option value="${op}" id="${i}" style="border-radius: 5px; padding:5px;"">${op}</option>`;
+    });
+    document.getElementById("fonts").innerHTML = options;
+  </script>
+
+  <style>
+    iframe {
+      border: 1px solid #fc0;
+      width: 400px;
+      height: 400px;
+    }
+
+    #submittext,
+    #fonts {
+      padding: 5px;
+    }
+
+    .widget {}
+
+    form {
+      width: 400px;
+    }
+
+    input,
+    select {
+      float: right;
+      clear: both;
+    }
+
+    input[type="text" i],
+    select {
+      width: 130px;
+    }
+
+    .switch {
+      position: relative;
+      width: 60px;
+      height: 28px;
+      float: right;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: 0.4s;
+      transition: 0.4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: 0.4s;
+      transition: 0.4s;
+    }
+
+    input:checked+.slider {
+      background-color: #3de23d;
+    }
+
+    input:focus+.slider {
+      box-shadow: 0 0 1px #2196f3;
+    }
+
+    input:checked+.slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 28px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+  </style>
+</body>
